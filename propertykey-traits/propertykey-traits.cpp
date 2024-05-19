@@ -255,6 +255,16 @@ main()
         std::cout << DEVPKEY_Test_Key4 << std::endl;
         std::cout << std::endl;
     }
+
+    {
+        assert(std::format("{}", PKEY_Test_Key1_With_Metatype)
+                      == "PKEY_Test_Key1 ({12345678-9012-3456-7890-123456789012},42) (VT_EMPTY/0)");
+        assert(std::format(L"{}", PKEY_Test_Key1_With_Metatype)
+               == L"PKEY_Test_Key1 ({12345678-9012-3456-7890-123456789012},42) "
+                  "(VT_EMPTY/0)");
+        std::cout << PKEY_Test_Key1_With_Metatype << std::endl;
+        std::wcout << PKEY_Test_Key1_With_Metatype << std::endl;
+    }
 }
 
 // Run program: Ctrl + F5 or Debug > Start Without Debugging menu
