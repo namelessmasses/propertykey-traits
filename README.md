@@ -60,5 +60,5 @@ In this version, compile time traits include
 
 ## Coming soon... (as in the next few hours)
 A version to come in the next few days will support
-* Optionally assigning of a _metatype_ to the value of the property.
+* [COMPLETED] Optionally assigning of a _metatype_ to the value of the property.
 * Runtime retrieval of "traits" via any structure that meets the `RuntimePropertyKeyConcept` concept.
