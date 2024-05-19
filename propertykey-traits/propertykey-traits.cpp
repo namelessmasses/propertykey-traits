@@ -28,7 +28,7 @@ constexpr GUID guid = constexpr_guid_v<0x12345678,
                                        0x90,
                                        0x12>;
 
-DEFINE_PROPERTYKEY_(PROPERTYKEY, PKEY_Test_Key1, guid, 42);
+PROPERTYKEY_DEFINE(PROPERTYKEY, PKEY_Test_Key1, guid, 42);
 static_assert(PKEY_Test_Key1_PropertyKey::fmtid_value == guid);
 static_assert(PKEY_Test_Key1_PropertyKey::fmtid_value != CONSTEXPR_GUID_NULL);
 static_assert(PKEY_Test_Key1_PropertyKey::pid_value == 42);
@@ -68,7 +68,7 @@ struct OtherPropertyKey
     long pid;
 };
 
-DEFINE_PROPERTYKEY_(OtherPropertyKey, OPKEY_Test_Key3, guid, 44);
+PROPERTYKEY_DEFINE(OtherPropertyKey, OPKEY_Test_Key3, guid, 44);
 static_assert(OPKEY_Test_Key3_PropertyKey::fmtid_value == guid);
 static_assert(OPKEY_Test_Key3_PropertyKey::fmtid_value != CONSTEXPR_GUID_NULL);
 static_assert(OPKEY_Test_Key3_PropertyKey::pid_value == 44);

@@ -72,7 +72,7 @@ operator<<(std::basic_ostream<CharT>                          &os,
     return os;
 }
 
-#define DEFINE_PROPERTYKEY_(runtimekeytype, name, guid, pid)                   \
+#define PROPERTYKEY_DEFINE(runtimekeytype, name, guid, pid)                    \
     struct name##_PropertyKey: PropertyKey<runtimekeytype, guid, pid>          \
     {                                                                          \
         using base_type = PropertyKey<runtimekeytype, guid, pid>;              \

@@ -28,19 +28,19 @@ static_assert(RuntimePropertyKeyConcept<PROPERTYKEY>);
                            Data47,                                             \
                            Data48,                                             \
                            pid)                                                \
-    DEFINE_PROPERTYKEY_(PROPERTYKEY,                                           \
-                        name,                                                  \
-                        (constexpr_guid_v<Data1,                               \
-                                          Data2,                               \
-                                          Data3,                               \
-                                          Data41,                              \
-                                          Data42,                              \
-                                          Data43,                              \
-                                          Data44,                              \
-                                          Data45,                              \
-                                          Data46,                              \
-                                          Data47,                              \
-                                          Data48>),                            \
-                        pid)
+    PROPERTYKEY_DEFINE(PROPERTYKEY,                                            \
+                       name,                                                   \
+                       (constexpr_guid_v<Data1,                                \
+                                         Data2,                                \
+                                         Data3,                                \
+                                         Data41,                               \
+                                         Data42,                               \
+                                         Data43,                               \
+                                         Data44,                               \
+                                         Data45,                               \
+                                         Data46,                               \
+                                         Data47,                               \
+                                         Data48>),                             \
+                       pid)
 
 #endif // _HAS_CXX20

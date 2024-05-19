@@ -259,7 +259,7 @@ typedef struct _DEVPROPERTY
                           b7,                                                  \
                           b8,                                                  \
                           pid)                                                 \
-    DEFINE_PROPERTYKEY_(                                                       \
+    PROPERTYKEY_DEFINE(                                                        \
         DEVPROPKEY,                                                            \
         name,                                                                  \
         (constexpr_guid_v<l, w1, w2, b1, b2, b3, b4, b5, b6, b7, b8>),         \
