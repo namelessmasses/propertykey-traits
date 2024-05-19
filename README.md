@@ -14,7 +14,8 @@ Requires C++20.
 
 Implemnets compile time "traits" for Windows PROPERTYKEY and DEVPROPKEY. 
 
-Keys declared by `DEFINE_PROPERTYKEY` or `DEFINE_DEVPROPKEY` are now `constexpr` and no longer require the `INITGUID` idiom for declaring `extern` versus defining/initializing.
+~~Keys declared by `DEFINE_PROPERTYKEY` or `DEFINE_DEVPROPKEY` are now `constexpr` and no longer require the `INITGUID` idiom for declaring `extern` versus defining/initializing.~~
+Working on a means to "inline".
 
 Keys are distinct types. For example, `PKEY_Key_1` is a distinct type from `PKEY_Key_2` and therefore their values cannot be mistakenly assigned to one another. However, any key will decay to its underlying type. 
 
