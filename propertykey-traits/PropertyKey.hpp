@@ -7,7 +7,9 @@
 
 #include <string_view>
 
-template<RuntimePropertyKeyConcept RuntimePropertyKeyT, GUID fmtid_v, long pid_v>
+template<RuntimePropertyKeyConcept RuntimePropertyKeyT,
+         GUID                      fmtid_v,
+         long                      pid_v>
 struct PropertyKey
     : CompileTimePropertyKey<fmtid_v, pid_v>
     , RuntimePropertyKeyT
