@@ -38,7 +38,9 @@ void f(PROPERTYKEY const *pkey);
 f(&PKEY_Key_1); // will succeed and behave as expected with the values assigned in the declaration.
 ```
 
-`DEFINE_PROPERTYKEY_(underlying_key_type, name, fmtid, pid)` allows any `underlying_key_type` that satisfies the following C++ concept.
+Internally, the following macro is used to define a property key;
+
+`PROPERTYKEY_DEFINE(underlying_key_type, name, fmtid, pid)` allows any `underlying_key_type` that satisfies the following C++ concept.
 
 ```
 template<typename RuntimePropertyKeyT>
