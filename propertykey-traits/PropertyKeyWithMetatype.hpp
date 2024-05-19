@@ -1,26 +1,83 @@
 #pragma once
 
-#if 0
-template <MeetsBasePKT BasePKT, typename MTT, MTT mt>
-struct PKwMTT
-    : pk<typename BasePKT::rtt, BasePKT::fmtid_value.i, BasePKT::pid_value>
-{
-    using base_type = pk<typename BasePKT::rtp, BasePKT::fmtid_value.i, BasePKT::pid_value>;
+#include "PropertyKey.hpp"
+#include "RuntimePropertyKey.hpp"
 
-    using mtt = MTT;
-    static constexpr mtt mtt_value = mt;
+#include <concepts>
+#include <type_traits>
+#include <string_view>
 
-    constexpr PKwMTT()
-        : base_type{}
-    {}
+template<typename PropertyKeyTraitsT>
+concept PropertyKeyTraitsConcept = requires {
+    typename PropertyKeyTraitsT::runtime_type;
+    RuntimePropertyKeyConcept<typename PropertyKeyTraitsT::runtime_type>;
+
+    typename PropertyKeyTraitsT::compiletime_type;
+
+    std::same_as<decltype(PropertyKeyTraitsT::fmtid_value), GUID>;
+    std::same_as<decltype(PropertyKeyTraitsT::pid_value), long>;
 };
-template <typename T>
-void test_output(T const &t)
-{
-    std::cout << "Format: " << std::format("{0}", t) << std::endl;
-    //std::wcout << "Format (w): " << std::format(L"{0}", t) << std::endl;
-    //std::cout << t << std::endl;
-    //std::wcout << t << std::endl;
-}
 
-#endif
+template<PropertyKeyTraitsConcept PropertyKeyTraitsT,
+         typename MetaTypeT,
+         MetaTypeT MetaTypeValue>
+struct PropertyKeyWithMetatype: PropertyKeyTraitsT
+{
+    using base_type                               = PropertyKeyTraitsT;
+
+    using metatype_type                           = MetaTypeT;
+
+    static constexpr metatype_type metatype_value = MetaTypeValue;
+
+    constexpr PropertyKeyWithMetatype()
+        : base_type{}
+    {
+    }
+};
+
+#define PROPERTYKEY_ADD_METATYPE(KeyName, MetaTypeValue, ...)                  \
+    struct KeyName##_PropertyKey_With_Metatype                                 \
+        : PropertyKeyWithMetatype<decltype(KeyName),                           \
+                                  std::decay_t<decltype(MetaTypeValue)>,       \
+                                  MetaTypeValue>                               \
+    {                                                                          \
+        using base_type                                                        \
+            = PropertyKeyWithMetatype<decltype(KeyName),                       \
+                                      std::decay_t<decltype(MetaTypeValue)>,   \
+                                      MetaTypeValue>;                          \
+                                                                               \
+        using metatype_type = std::decay_t<decltype(MetaTypeValue)>;           \
+                                                                               \
+        constexpr KeyName##_PropertyKey_With_Metatype()                        \
+            : PropertyKeyWithMetatype<decltype(KeyName),                       \
+                                      std::decay_t<decltype(MetaTypeValue)>,   \
+                                      MetaTypeValue>{}                         \
+        {                                                                      \
+        }                                                                      \
+                                                                               \
+        static constexpr metatype_type    metatype_value = (MetaTypeValue);    \
+                                                                               \
+        static constexpr std::string_view metatype_nameA_value                 \
+            = #MetaTypeValue;                                                  \
+                                                                               \
+        static constexpr std::wstring_view metatype_nameW_value                \
+            = L#MetaTypeValue;                                                 \
+                                                                               \
+        constexpr metatype_type const &                                        \
+        metatype() const                                                       \
+        {                                                                      \
+            return metatype_value;                                             \
+        }                                                                      \
+                                                                               \
+        constexpr std::string_view                                             \
+        metatype_nameA() const                                                 \
+        {                                                                      \
+            return metatype_nameA_value;                                       \
+        }                                                                      \
+                                                                               \
+        constexpr std::wstring_view                                            \
+        metatype_nameW() const                                                 \
+        {                                                                      \
+            return metatype_nameW_value;                                       \
+        }                                                                      \
+    } KeyName##_With_Metatype

@@ -2,6 +2,7 @@
 // execution begins and ends there.
 //
 
+#include "PropertyKeyWithMetatype.hpp"
 #include "PropertyKey.hpp"
 #include "CompileTimePropertyKey.hpp"
 #include "RuntimePropertyKey.hpp"
@@ -103,6 +104,46 @@ static_assert(DEVPKEY_Test_Key4_PropertyKey::nameW_value
               == L"DEVPKEY_Test_Key4");
 static_assert(DEVPKEY_Test_Key4.nameA() == "DEVPKEY_Test_Key4");
 static_assert(DEVPKEY_Test_Key4.nameW() == L"DEVPKEY_Test_Key4");
+
+PROPERTYKEY_ADD_METATYPE(PKEY_Test_Key1, VT_EMPTY);
+static_assert(
+    std::is_same_v<PKEY_Test_Key1_PropertyKey_With_Metatype::metatype_type,
+                   decltype(VT_EMPTY)>);
+static_assert(PKEY_Test_Key1_PropertyKey_With_Metatype::metatype_value
+              == VT_EMPTY);
+static_assert(PKEY_Test_Key1_PropertyKey_With_Metatype::metatype_nameA_value
+              == "VT_EMPTY");
+static_assert(PKEY_Test_Key1_PropertyKey_With_Metatype::metatype_nameW_value
+              == L"VT_EMPTY");
+static_assert(PKEY_Test_Key1_With_Metatype.metatype() == VT_EMPTY);
+static_assert(PKEY_Test_Key1_With_Metatype.metatype_nameA() == "VT_EMPTY");
+static_assert(PKEY_Test_Key1_With_Metatype.metatype_nameW() == L"VT_EMPTY");
+static_assert(PKEY_Test_Key1_With_Metatype.metatype_value == VT_EMPTY);
+static_assert(PKEY_Test_Key1_With_Metatype.metatype_nameA_value == "VT_EMPTY");
+static_assert(PKEY_Test_Key1_With_Metatype.metatype_nameW_value == L"VT_EMPTY");
+
+PROPERTYKEY_ADD_METATYPE(DEVPKEY_Test_Key4, DEVPROP_TYPE_STRING_LIST);
+static_assert(
+    std::is_same_v<DEVPKEY_Test_Key4_PropertyKey_With_Metatype::metatype_type,
+                   decltype(DEVPROP_TYPE_STRING_LIST)>);
+static_assert(DEVPKEY_Test_Key4_PropertyKey_With_Metatype::metatype_value
+              == DEVPROP_TYPE_STRING_LIST);
+static_assert(DEVPKEY_Test_Key4_PropertyKey_With_Metatype::metatype_nameA_value
+              == "DEVPROP_TYPE_STRING_LIST");
+static_assert(DEVPKEY_Test_Key4_PropertyKey_With_Metatype::metatype_nameW_value
+              == L"DEVPROP_TYPE_STRING_LIST");
+static_assert(DEVPKEY_Test_Key4_With_Metatype.metatype()
+              == DEVPROP_TYPE_STRING_LIST);
+static_assert(DEVPKEY_Test_Key4_With_Metatype.metatype_nameA()
+              == "DEVPROP_TYPE_STRING_LIST");
+static_assert(DEVPKEY_Test_Key4_With_Metatype.metatype_nameW()
+              == L"DEVPROP_TYPE_STRING_LIST");
+static_assert(DEVPKEY_Test_Key4_With_Metatype.metatype_value
+              == DEVPROP_TYPE_STRING_LIST);
+static_assert(DEVPKEY_Test_Key4_With_Metatype.metatype_nameA_value
+              == "DEVPROP_TYPE_STRING_LIST");
+static_assert(DEVPKEY_Test_Key4_With_Metatype.metatype_nameW_value
+              == L"DEVPROP_TYPE_STRING_LIST");
 
 int
 main()
