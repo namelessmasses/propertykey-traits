@@ -104,54 +104,9 @@ static_assert(DEVPKEY_Test_Key4_PropertyKey::nameW_value
 static_assert(DEVPKEY_Test_Key4.nameA() == "DEVPKEY_Test_Key4");
 static_assert(DEVPKEY_Test_Key4.nameW() == L"DEVPKEY_Test_Key4");
 
-#include "str_const.hpp"
-
-struct Foo
-{
-};
-
-str_const guid_str("{12345678-9012-3456-7890-123456789012}");
-
-#include <format>
-
-constexpr GUID guid = constexpr_guid_v<0x12345678,
-                                       0x9012,
-                                       0x3456,
-                                       0x78,
-                                       0x90,
-                                       0x12,
-                                       0x34,
-                                       0x56,
-                                       0x78,
-                                       0x90,
-                                       0x12>;
-
-str_const guid_str("{12345678-9012-3456-7890-123456789012}");
-
-#include <format>
-
-constexpr GUID guid = constexpr_guid_v<0x12345678,
-                                       0x9012,
-                                       0x3456,
-                                       0x78,
-                                       0x90,
-                                       0x12,
-                                       0x34,
-                                       0x56,
-                                       0x78,
-                                       0x90,
-                                       0x12>;
-
-str_const guid_str("{12345678-9012-3456-7890-123456789012}");
-
-static_assert(std::string_view(guid_str.data(), guid_str.size()) == std::format("{}", guid));
-
 int
 main()
 {
-
-    assert(__uuidof(Foo) == guid);
-
     assert(std::format("{}", guid) == "{12345678-9012-3456-7890-123456789012}");
     assert(std::format(L"{0}", guid)
            == L"{12345678-9012-3456-7890-123456789012}");
