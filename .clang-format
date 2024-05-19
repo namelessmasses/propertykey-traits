@@ -1,0 +1,246 @@
+BasedOnStyle: LLVM
+IndentWidth: 4
+TabWidth: 4
+
+AccessModifierOffset: -4
+AlignAfterOpenBracket: Align
+# clang-format 13
+#AlignArrayOfStructures: Right
+AlignConsecutiveAssignments: AcrossEmptyLinesAndComments
+AlignConsecutiveBitFields: AcrossEmptyLinesAndComments
+AlignConsecutiveDeclarations: AcrossEmptyLinesAndComments
+AlignConsecutiveMacros: AcrossEmptyLinesAndComments
+
+# Only valid if AllowShortCaseLabelsOnASingleLine: true
+# See below
+# clang-format 17
+# AlignConsecutiveShortCaseStatements: 
+#   Enabled: true
+#   AcrossEmptyLines: true
+#   AcrossComments: true
+#   AlignCaseColons: true
+
+AlignOperands: AlignAfterOperator
+
+# clang-format v16 and later
+# AlignTrailingComments: 
+#   Kind: Always
+#   OverEmptyLines: 2
+
+AlignTrailingComments: true
+
+AllowAllArgumentsOnNextLine: false
+
+AllowAllParametersOfDeclarationOnNextLine: false
+
+AllowShortBlocksOnASingleLine: true
+
+AllowShortCaseLabelsOnASingleLine: true
+
+AllowShortEnumsOnASingleLine: true
+
+AllowShortFunctionsOnASingleLine: Inline
+
+AllowShortIfStatementsOnASingleLine: false
+
+AllowShortLambdasOnASingleLine: true
+
+AllowShortLoopsOnASingleLine: true
+
+AlwaysBreakAfterDefinitionReturnType: All
+#PenaltyReturnTypeOnItsOwnLine: 2
+AlwaysBreakAfterReturnType: All
+
+AlwaysBreakBeforeMultilineStrings: false
+
+BinPackArguments: false
+
+BinPackParameters: false
+
+BitFieldColonSpacing: None
+
+BraceWrapping: 
+  AfterCaseLabel: true
+  AfterClass: true
+  AfterControlStatement: MultiLine
+  AfterEnum: false
+  AfterFunction: true
+  AfterNamespace: true
+  AfterStruct: true
+  AfterUnion: true
+  AfterExternBlock: true
+  BeforeCatch: true
+  BeforeElse: true
+  BeforeLambdaBody: true
+  BeforeWhile: true
+  SplitEmptyFunction: false
+  SplitEmptyRecord: false
+  SplitEmptyNamespace: false
+
+# clang-format 17
+#BracedInitializerIndentWidth: 4
+
+# clang-format 16
+#BreakAfterAttributes: Always
+
+# clang-format 19
+# BreakAfterReturnType: Automatic
+# AlwaysBreakAfterReturnType does not seem to work with clang-format 12 (VS16)
+
+# clang-format 16
+# BreakArrays: false
+
+BreakBeforeBinaryOperators: All
+
+BreakBeforeBraces: Allman
+
+BreakBeforeConceptDeclarations: true
+
+# clang-format 16
+#BreakBeforeInlineASMColon: Always
+
+BreakBeforeTernaryOperators: true
+
+BreakConstructorInitializers: BeforeComma
+
+BreakInheritanceList: BeforeComma
+
+BreakStringLiterals: true
+
+CompactNamespaces: false
+
+ConstructorInitializerIndentWidth: 4
+
+Cpp11BracedListStyle: true
+
+DerivePointerAlignment: false
+
+# clang-format 13
+#EmptyLineAfterAccessModifier: Never
+
+EmptyLineBeforeAccessModifier: Always
+
+FixNamespaceComments: true
+
+IncludeBlocks: Preserve
+
+# clang-format 13
+# IndentAccessModifiers: false
+
+IndentCaseBlocks: false
+
+IndentCaseLabels: false
+
+IndentExternBlock: Indent
+
+IndentGotoLabels: false
+
+IndentPPDirectives: None
+
+IndentRequires: false
+
+# clang-format 16
+#InsertNewlineAtEOF: true
+
+# clang-format 16
+# IntegerLiteralSeparater:
+#   Binary: 4
+#   BinaryMinDigits: 5
+#   Decimal: 3
+#   DecimalMinDigits: 4
+#   Hex: 4
+#   HexMinDigits: 4
+
+# clang-format 13
+# LambdaBodyIndentation: Signature
+
+Language: Cpp
+
+# clang-format 16
+# LineEnding: LF
+# clang-format <16
+UseCRLF: true
+
+MaxEmptyLinesToKeep: 1
+
+NamespaceIndentation: None
+
+# clang-format 13
+# PPIndentWidth: 1
+
+# clang-format 14
+#PackConstructorInitializers: Never
+
+PointerAlignment: Right
+
+# clang-format 14
+#QualifierAlignment: Right
+
+# clang-format 13
+#ReferenceAlignment: Right
+
+ReflowComments: true
+
+# clang-format 15
+#RequiresClausePosition: OwnLine
+
+# clang-format 16
+#RequiresExpressionIndentation: OuterScope
+
+# clang-format 14
+#SeparateDefinitionBlocks: Always
+
+SortIncludes: false
+
+SortUsingDeclarations: false
+
+SpaceAfterCStyleCast: false
+
+SpaceAfterLogicalNot: false
+
+SpaceAfterTemplateKeyword: false
+
+SpaceAroundPointerQualifiers: Before
+
+SpaceBeforeAssignmentOperators: true
+
+SpaceBeforeCaseColon: false
+
+SpaceBeforeCpp11BracedList: false
+
+SpaceBeforeCtorInitializerColon: false
+
+SpaceBeforeInheritanceColon: false
+
+SpaceBeforeParens: ControlStatements
+
+SpaceBeforeRangeBasedForLoopColon: true
+
+SpaceBeforeSquareBrackets: false
+
+SpaceInEmptyBlock: false
+
+SpacesInAngles: false
+
+SpacesInContainerLiterals: false
+
+# clang-format 13
+# SpacesInLineCommentPrefix: 
+#   Minimum: 1
+#   Maximum: 1
+
+# clang-format 17
+# SpacesInParens: Custom
+# SpacesInParensOptions:
+#   InConditionalStatements: false
+#   InCStyleCasts: false
+#   InEmptyParentheses: false
+#   Other: false
+
+SpacesInSquareBrackets: false
+
+Standard: c++20
+
+UseTab: Never
+
+
