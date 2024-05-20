@@ -6,6 +6,124 @@
 #include "concept.hpp"
 
 #include <string_view>
+#include <source_location>
+#include <stdexcept>
+#include <compare>
+namespace details
+{
+
+struct IRuntimePropertyKey
+{
+    constexpr IRuntimePropertyKey() {}
+
+    virtual ~IRuntimePropertyKey() = default;
+
+    virtual GUID const &
+    fmtid_rt() const
+        = 0;
+
+    virtual long
+    pid_rt() const
+        = 0;
+
+    bool
+    operator<(IRuntimePropertyKey const &rhs) const
+    {
+        if (auto cmp = pid_rt() <=> rhs.pid_rt();
+            cmp == std::strong_ordering::less)
+            return true;
+
+        return fmtid_rt() < rhs.fmtid_rt();
+    }
+};
+
+struct IRuntimePropertyKeyTraits: IRuntimePropertyKey
+{
+    virtual std::string_view const &
+    nameA_rt() const
+        = 0;
+
+    virtual std::wstring_view const &
+    nameW_rt() const
+        = 0;
+
+    virtual uint64_t
+    metatype_rt(std::source_location const sc
+                = std::source_location::current()) const
+        = 0;
+
+    virtual std::string_view const &
+    metatype_nameA_rt(std::source_location const sc
+                      = std::source_location::current()) const
+        = 0;
+
+    virtual std::wstring_view const &
+    metatype_nameW_rt(std::source_location const sc
+                      = std::source_location::current()) const
+        = 0;
+};
+
+template<RuntimePropertyKeyConcept RuntimePropertyT>
+struct CRuntimePropertyKeyShim: IRuntimePropertyKey
+{
+    RuntimePropertyT const &key;
+
+    constexpr CRuntimePropertyKeyShim(RuntimePropertyT const &key)
+        : key{key}
+    {
+    }
+
+    virtual GUID const &
+    fmtid_rt() const override
+    {
+        return key.fmtid;
+    }
+
+    virtual long
+    pid_rt() const override
+    {
+        return key.pid;
+    }
+};
+
+void
+AddPropertyKey(IRuntimePropertyKeyTraits const &key);
+
+IRuntimePropertyKeyTraits const *
+GetPropertyKey(IRuntimePropertyKey const &);
+
+template<RuntimePropertyKeyConcept RuntimePropertyT>
+struct RuntimePropertyKeyShim: IRuntimePropertyKey
+{
+    RuntimePropertyKeyShim(RuntimePropertyT const &key)
+        : key{key}
+    {
+    }
+
+    virtual GUID const &
+    fmtid_rt() const override
+    {
+        return key.fmtid;
+    }
+
+    virtual long
+    pid_rt() const override
+    {
+        return key.pid;
+    }
+
+    RuntimePropertyT const &key;
+};
+
+} // namespace details
+
+template<RuntimePropertyKeyConcept RuntimePropertyKeyT>
+details::IRuntimePropertyKeyTraits const *
+GetPropertyKey(RuntimePropertyKeyT const &key)
+{
+    details::RuntimePropertyKeyShim<RuntimePropertyKeyT> shim{key};
+    return details::GetPropertyKey(shim);
+}
 
 template<RuntimePropertyKeyConcept RuntimePropertyKeyT,
          GUID                      fmtid_v,
@@ -13,6 +131,7 @@ template<RuntimePropertyKeyConcept RuntimePropertyKeyT,
 struct PropertyKey
     : CompileTimePropertyKey<fmtid_v, pid_v>
     , RuntimePropertyKeyT
+    , details::IRuntimePropertyKeyTraits
 {
     using compiletime_type = CompileTimePropertyKey<fmtid_v, pid_v>;
     using compiletime_type::fmtid_value;
@@ -28,6 +147,18 @@ struct PropertyKey
 
     constexpr long
     pid() const
+    {
+        return pid_value;
+    }
+
+    virtual GUID const &
+    fmtid_rt() const override
+    {
+        return fmtid_value;
+    }
+
+    virtual long
+    pid_rt() const override
     {
         return pid_value;
     }
@@ -87,18 +218,66 @@ operator<<(std::basic_ostream<CharT>                          &os,
         static constexpr std::string_view  nameA_value = #name;                \
         static constexpr std::wstring_view nameW_value = L#name;               \
                                                                                \
-        constexpr std::string_view                                             \
+        constexpr std::string_view const &                                     \
         nameA() const                                                          \
         {                                                                      \
             return nameA_value;                                                \
         }                                                                      \
                                                                                \
-        constexpr std::wstring_view                                            \
+        constexpr std::wstring_view const &                                    \
         nameW() const                                                          \
         {                                                                      \
             return nameW_value;                                                \
         }                                                                      \
-    } name;                                                                    \
+                                                                               \
+        virtual std::string_view const &                                       \
+        nameA_rt() const override                                              \
+        {                                                                      \
+            return nameA_value;                                                \
+        }                                                                      \
+                                                                               \
+        virtual std::wstring_view const &                                      \
+        nameW_rt() const override                                              \
+        {                                                                      \
+            return nameW_value;                                                \
+        }                                                                      \
+                                                                               \
+        virtual uint64_t                                                       \
+        metatype_rt(std::source_location const sc) const override              \
+        {                                                                      \
+            throw std::runtime_error(                                          \
+                std::format("{}:{}:{} - {} metatype not available for {}.",    \
+                            sc.file_name(),                                    \
+                            sc.line(),                                         \
+                            sc.column(),                                       \
+                            sc.function_name(),                                \
+                            nameA_value));                                     \
+        }                                                                      \
+                                                                               \
+        virtual std::string_view const &                                       \
+        metatype_nameA_rt(std::source_location const sc) const override        \
+        {                                                                      \
+            throw std::runtime_error(                                          \
+                std::format("{}:{}:{} - {} metatype not available for {}.",    \
+                            sc.file_name(),                                    \
+                            sc.line(),                                         \
+                            sc.column(),                                       \
+                            sc.function_name(),                                \
+                            nameA_value));                                     \
+        }                                                                      \
+                                                                               \
+        virtual std::wstring_view const &                                      \
+        metatype_nameW_rt(std::source_location const sc) const override        \
+        {                                                                      \
+            throw std::runtime_error(                                          \
+                std::format("{}:{}:{} - {} metatype not available for {}.",    \
+                            sc.file_name(),                                    \
+                            sc.line(),                                         \
+                            sc.column(),                                       \
+                            sc.function_name(),                                \
+                            nameA_value));                                     \
+        }                                                                      \
+    };                                                                         \
                                                                                \
     template<IsCharOrWideChar CharT>                                           \
     struct std::formatter<name##_PropertyKey, CharT>                           \
@@ -132,4 +311,5 @@ operator<<(std::basic_ostream<CharT>                          &os,
                        "{0}",                                                  \
                        pk);                                                    \
         return os;                                                             \
-    }
+    }                                                                          \
+    inline constexpr name##_PropertyKey name

@@ -8,6 +8,7 @@
 #include <type_traits>
 #include <string_view>
 #include <format>
+#include <bit>
 
 template<typename PropertyKeyTraitsT>
 concept PropertyKeyTraitsConcept = requires {
@@ -32,7 +33,20 @@ concept PropertyKeyTraitsConcept = requires {
 };
 
 template<typename MetaTypeT>
-concept IsFormattable = requires {
+concept IsMetaTypable = requires(MetaTypeT metatype_value) {
+
+#if 0
+    /// \todo Does this have the desiered effect of checking if the type
+    /// survives padding through a bit_cast if widening is required?
+    std::countl_zero(std::bit_cast<uint64_t, MetaTypeT>(metatype_value))
+        == (sizeof(uint64_t) - sizeof(MetaTypeT)) * CHAR_BIT
+               + std::countl_zero(metatype_value);
+    sizeof(MetaTypeT) <= sizeof(uint64_t);
+#else
+    std::is_convertible_v<MetaTypeT, uint64_t>;
+
+#endif
+
 #if _HAS_CXX23
     std::formattable<MetaTypeT, char>;
     std::formattable<MetaTypeT, wchar_t>;
@@ -82,7 +96,7 @@ struct std::formatter<enum VARENUM, CharT>
 };
 
 template<PropertyKeyTraitsConcept PropertyKeyTraitsT,
-         IsFormattable            MetaTypeT,
+         IsMetaTypable            MetaTypeT,
          MetaTypeT                MetaTypeValue>
 struct PropertyKeyWithMetatype: PropertyKeyTraitsT
 {
@@ -143,7 +157,27 @@ struct PropertyKeyWithMetatype: PropertyKeyTraitsT
         {                                                                      \
             return metatype_nameW_value;                                       \
         }                                                                      \
-    } KeyName##_With_Metatype;                                                 \
+                                                                               \
+        virtual uint64_t                                                       \
+        metatype_rt(std::source_location const) const override                 \
+        {                                                                      \
+            return (uint64_t)metatype_value;                                   \
+        }                                                                      \
+                                                                               \
+        virtual std::string_view const &                                       \
+        metatype_nameA_rt(std::source_location const) const override           \
+        {                                                                      \
+            return metatype_nameA_value;                                       \
+        }                                                                      \
+                                                                               \
+        virtual std::wstring_view const &                                      \
+        metatype_nameW_rt(std::source_location const) const override           \
+        {                                                                      \
+            return metatype_nameW_value;                                       \
+        }                                                                      \
+    };                                                                         \
+    inline constexpr KeyName##_PropertyKey_With_Metatype                       \
+        KeyName##_With_Metatype;                                               \
                                                                                \
     template<IsCharOrWideChar CharT>                                           \
     struct std::formatter<KeyName##_PropertyKey_With_Metatype, CharT>          \
@@ -162,7 +196,7 @@ struct PropertyKeyWithMetatype: PropertyKeyTraitsT
         template<typename FormatContext>                                       \
         auto                                                                   \
         format(const KeyName##_PropertyKey_With_Metatype &key,                 \
-               FormatContext                             &context) const                                   \
+               FormatContext                             &context) const       \
         {                                                                      \
             return std::format_to(context.out(),                               \
                                   "{} ({}/{})",                                \

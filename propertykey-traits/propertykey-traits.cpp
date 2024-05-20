@@ -1,7 +1,6 @@
 // TestTemplateValueArgs.cpp : This file contains the 'main' function. Program
 // execution begins and ends there.
 //
-
 #include "PropertyKeyWithMetatype.hpp"
 #include "PropertyKey.hpp"
 #include "CompileTimePropertyKey.hpp"
@@ -16,6 +15,8 @@
 #include <format>
 #include <string>
 #include <cassert>
+#include <regex>
+#include <filesystem>
 
 constexpr GUID guid = constexpr_guid_v<0x12345678,
                                        0x9012,
@@ -28,7 +29,6 @@ constexpr GUID guid = constexpr_guid_v<0x12345678,
                                        0x78,
                                        0x90,
                                        0x12>;
-
 PROPERTYKEY_DEFINE(PROPERTYKEY, PKEY_Test_Key1, guid, 42);
 static_assert(PKEY_Test_Key1_PropertyKey::fmtid_value == guid);
 static_assert(PKEY_Test_Key1_PropertyKey::fmtid_value != CONSTEXPR_GUID_NULL);
@@ -258,12 +258,43 @@ main()
 
     {
         assert(std::format("{}", PKEY_Test_Key1_With_Metatype)
-                      == "PKEY_Test_Key1 ({12345678-9012-3456-7890-123456789012},42) (VT_EMPTY/0)");
+               == "PKEY_Test_Key1 ({12345678-9012-3456-7890-123456789012},42) "
+                  "(VT_EMPTY/0)");
         assert(std::format(L"{}", PKEY_Test_Key1_With_Metatype)
                == L"PKEY_Test_Key1 ({12345678-9012-3456-7890-123456789012},42) "
                   "(VT_EMPTY/0)");
         std::cout << PKEY_Test_Key1_With_Metatype << std::endl;
         std::wcout << PKEY_Test_Key1_With_Metatype << std::endl;
+    }
+
+    {
+        PROPERTYKEY pk{guid, 42};
+        auto        pk1 = GetPropertyKey(pk);
+        assert(!pk1);
+        details::AddPropertyKey(PKEY_Test_Key1);
+        pk1 = GetPropertyKey(pk);
+        assert(pk1);
+        assert(pk1->fmtid_rt() == guid);
+        assert(pk1->pid_rt() == 42);
+        assert(pk1->nameA_rt() == "PKEY_Test_Key1");
+        assert(pk1->nameW_rt() == L"PKEY_Test_Key1");
+        try
+        {
+            pk1->metatype_rt();
+        }
+        catch (std::runtime_error const &ex)
+        {
+            std::source_location loc = std::source_location::current();
+            std::string          formattedRegexText(
+                std::format(".*:{}+:[0-9]+ - .*main.*metatype not available "
+                                     "for PKEY_Test_Key1.",
+                            loc.line() - 4));
+            std::regex  exceptionRE(formattedRegexText);
+            std::string exceptionText = ex.what();
+            std::smatch m;
+            bool const  match = std::regex_match(exceptionText, m, exceptionRE);
+            assert(match);
+        }
     }
 }
 
